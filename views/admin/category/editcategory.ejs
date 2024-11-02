@@ -19,25 +19,28 @@
                                             <h5>Category</h5>
                                                      </div>
                                         <div class="card-block">
-                                            <form class="form-material" action="/admin/submit-category" method="post" enctype="multipart/form-data">
+                                            <form class="form-material" action="/admin/update-category/<%= category._id  %>" method="post" enctype="multipart/form-data">
                                                 <div class="form-group form-default">
-                                                    <input type="text"  class="form-control" name="name" required="">
+                                                    <input type="text"  class="form-control" name="name" value="<%= category.name %>" required="">
                                                     <span class="form-bar"></span>
                                                     <label class="float-label">Name</label>
                                                 </div>
                                                 <div class="form-group form-default">
-                                                    <input type="text"  class="form-control" name="description" required="">
+                                                    <input type="text"  class="form-control" value="<%= category.description %>" name="description" required="">
                                                     <span class="form-bar"></span>
                                                     <label class="float-label">Description</label>
                                                 </div>
                                                 <div class="form-group form-default">
                                                    <select name="status" class="form-control" >
-                                                    <option value="active">Active</option>
-                                                    <option value="inactive">Inactive</option>
+                                                    <option value="active"  <%= category.status === 'active' ? 'selected' : '' %>>Active</option>
+                                                    <option value="inactive" <%= category.status === 'inactive' ? 'selected' : '' %>>Inactive</option>
                                                    </select>
                                                     <label class="float-label">Status</label>
                                                 </div>
                                                 <div class="form-group form-default" >
+
+                                                    <img src="/<%= category.image %>" alt="Category Image" style="width: 50px; height: 50px;">
+                                                       
                                                     <input type="file" id="myFile" class="form-control" name="categoryimage">
 
                                                      <label class="float-label">Image</label>

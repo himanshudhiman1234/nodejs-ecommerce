@@ -1,28 +1,29 @@
-const express = require("express")
+const express = require("express");
 const app = express();
-const expressLayout = require("express-ejs-layouts")
-const connectDB = require('./config/db')
+const expressLayout = require("express-ejs-layouts");
+const connectDB = require('./config/db');
 require('dotenv').config();
-const PORT = 5000 || process.env.PORT;
+const PORT = process.env.PORT || 5000;
 
-//admin Routes
-const dashboardRoute = require('./routes/admin/dashboard')
-const productRoute = require('./routes/admin/products')
-const categoryRoute = require('./routes/admin/category')
+// Admin Routes
+const dashboardRoute = require('./routes/admin/dashboard');
+const productRoute = require('./routes/admin/products');
+const categoryRoute = require('./routes/admin/category');
 
+// Connect to the database
 connectDB();
 
-const {register,login}= require('./controller/register')
+// Import Controllers
+const { register, login } = require('./controller/register');
 
-
-app.use(express.static('public'))
-app.use(express.json())
+// Middleware
+app.use(express.static('public')); // Serves static files from 'public' directory
+app.use(express.json());
 app.use(express.urlencoded({ extended: true }));  // For parsing application/x-www-form-urlencoded
-// 
-app.use(expressLayout)
-// app.set('layout','./layout/main')
-app.set('view engine','ejs')
+app.use(expressLayout);
+app.set('view engine', 'ejs');
 
+// Dynamic Layout Selection Middleware
 app.use((req, res, next) => {
     if (req.path.startsWith('/admin')) {
         req.app.set('layout', './layout/admin');
@@ -34,18 +35,18 @@ app.use((req, res, next) => {
     next();
 });
 
-
-app.use('/admin',dashboardRoute)
+// Routes
+app.use('/admin', dashboardRoute);
 app.use('/admin', productRoute);
-app.use('/admin',categoryRoute)
+app.use('/admin', categoryRoute);
 
-app.post('/register',register)
-app.post('/login',login)
-app.get("/login",(req,res)=>{
-    res.render("login")
-})
-app.use("/admin",require('./routes/admin/dashboard')) 
+app.post('/register', register);
+app.post('/login', login);
+app.get("/login", (req, res) => {
+    res.render("login");
+});
 
-app.listen(PORT,()=>{
-    console.log(`server is starting`)
-})
+// Start the Server
+app.listen(PORT, () => {
+    console.log(`Server is starting on port ${PORT}`);
+});
