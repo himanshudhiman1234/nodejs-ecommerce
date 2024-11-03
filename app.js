@@ -9,7 +9,8 @@ const PORT = process.env.PORT || 5000;
 const dashboardRoute = require('./routes/admin/dashboard');
 const productRoute = require('./routes/admin/products');
 const categoryRoute = require('./routes/admin/category');
-
+const userRoute  = require('./routes/admin/users')
+const subcategory =  require('./routes/admin/subcategory')
 // Connect to the database
 connectDB();
 
@@ -39,6 +40,9 @@ app.use((req, res, next) => {
 app.use('/admin', dashboardRoute);
 app.use('/admin', productRoute);
 app.use('/admin', categoryRoute);
+app.use('/admin',userRoute)
+app.use('/admin',subcategory)
+
 
 app.post('/register', register);
 app.post('/login', login);

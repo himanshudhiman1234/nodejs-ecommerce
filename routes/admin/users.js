@@ -1,12 +1,10 @@
 const express = require("express")
 const router = express.Router();
 
+const showUser = require("../../controller/admin/users")
 
 
-
-router.get('/show-users',(req,res)=>{
-    req.render("admin/user")
-})
+router.get('/show-users',showUser)
 
 
 
