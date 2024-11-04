@@ -12,24 +12,24 @@
                                             <h5>Product Form</h5>
                                         </div>
                                         <div class="card-block">
-                                            <form class="form-material" action="/admin/submit-product" method="POST" enctype="multipart/form-data">
+                                            <form class="form-material" action="/admin/update-product/<%= products._id  %>" method="POST" enctype="multipart/form-data">
                                                 <!-- Product Name -->
                                                 <div class="form-group form-default">
-                                                    <input type="text" name="name" class="form-control" required>
+                                                    <input type="text" name="name" class="form-control" value="<%= products.name %>" required>
                                                     <span class="form-bar"></span>
                                                     <label class="float-label">Product Name</label>
                                                 </div>
 
                                                 <!-- Description -->
                                                 <div class="form-group form-default">
-                                                    <textarea name="description" class="form-control" required></textarea>
+                                                    <textarea name="description" class="form-control"    required><%= products.description %></textarea>
                                                     <span class="form-bar"></span>
                                                     <label class="float-label">Description</label>
                                                 </div>
 
                                                 <!-- Price -->
                                                 <div class="form-group form-default">
-                                                    <input type="number" name="price" class="form-control" required min="0" step="0.01">
+                                                    <input type="number" name="price" value="<%= products.price %>" class="form-control" required min="0" step="0.01">
                                                     <span class="form-bar"></span>
                                                     <label class="float-label">Price</label>
                                                 </div>
@@ -57,30 +57,34 @@
 
                                                 <!-- Total Product Quantity -->
                                                 <div class="form-group form-default">
-                                                    <input type="number" name="totalQuantity" class="form-control" required min="0">
+                                                    <input type="number" name="totalQuantity" value="<%= products.price %>" class="form-control" required min="0">
                                                     <span class="form-bar"></span>
                                                     <label class="float-label">Total Product Quantity</label>
                                                 </div>
 
                                                 <!-- Images -->
                                                 <div class="form-group form-default">
-                                                    <input type="file" name="images" class="form-control" multiple>
+                                                    <% products.images.forEach((image) => { %>
+                                                        <img src="/<%= image %>" alt="Product Image" style="width: 50px; height: 50px;">
+                                                    <% }) %>
+                                                    
+                                                    <input type="file" name="images"  class="form-control" multiple>
                                                     <span class="form-bar"></span>
                                                     <label class="float-label">Upload Images</label>
                                                 </div>
 
                                                 <!-- Variants -->
                                                <!-- Variants (Simplified Naming) -->
-                                                <div class="form-group form-default">
-                                                    <input type="text" name="variantColor" class="form-control" placeholder="Color">
-                                                    <span class="form-bar"></span>
-                                                    <label class="float-label">Color</label>
-                                                </div>
-                                                <div class="form-group form-default">
-                                                    <input type="text" name="variantSize" class="form-control" placeholder="Size">
-                                                    <span class="form-bar"></span>
-                                                    <label class="float-label">Size</label>
-                                                </div>
+<div class="form-group form-default">
+    <input type="text" name="variantColor" value="<%= products.variantColor %>" class="form-control" placeholder="Color">
+    <span class="form-bar"></span>
+    <label class="float-label">Color</label>
+</div>
+<div class="form-group form-default">
+    <input type="text" name="variantSize" value="<%= products.variantSize %>" class="form-control" placeholder="Size">
+    <span class="form-bar"></span>
+    <label class="float-label">Size</label>
+</div>
 
                                                 
 
