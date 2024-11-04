@@ -1,6 +1,6 @@
 const User =  require("../models/user")
 const bcrypt = require("bcrypt")
-
+const jwt = require("jsonwebtoken")
 
 const register =async(req,res) =>{
 
@@ -57,7 +57,21 @@ try{
     if(!isMatch){
       return res.status(400).json({message:"Invalid Credential"})
     }
-    res.status(200).json({message:"Login Successfull",userId :user._id})
+
+    const token = jwt.sign({
+        id:user._id,email:user.email,
+    },process.env.JWT_SECRET,{
+        expiresIn:"1h"
+    })
+
+    res.cookie("token", token, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production", // Secure in production only
+        maxAge: 3600000 // 1 hour
+    });
+
+    // Redirect to the admin show-users page
+    res.redirect("/admin/show-users");
 }catch(error){
     console.log(error);
     res.status(500).json({message:"Server error"})

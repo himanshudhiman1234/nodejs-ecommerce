@@ -170,9 +170,12 @@
                                     </a>
                                 </li>
                                 <li class="waves-effect waves-light">
-                                    <a href="auth-normal-sign-in.html">
-                                        <i class="ti-layout-sidebar-left"></i> Logout
-                                    </a>
+                                    <form id="logout-form" action="/logout" method="POST" style="display: inline;">
+                                        <button type="submit" style="background: none; border: none; cursor: pointer;">
+                                            <i class="ti-layout-sidebar-left"></i> Logout
+                                        </button>
+                                    </form>
+                                    
                                 </li>
                             </ul>
                         </li>

@@ -11,6 +11,9 @@ const productRoute = require('./routes/admin/products');
 const categoryRoute = require('./routes/admin/category');
 const userRoute  = require('./routes/admin/users')
 const subcategory =  require('./routes/admin/subcategory')
+const cookieParser = require("cookie-parser");
+
+const authenticateToken = require("./middleware/authenticate")
 // Connect to the database
 connectDB();
 
@@ -18,6 +21,7 @@ connectDB();
 const { register, login } = require('./controller/register');
 
 // Middleware
+app.use(cookieParser());
 app.use(express.static('public')); // Serves static files from 'public' directory
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));  // For parsing application/x-www-form-urlencoded
@@ -37,18 +41,25 @@ app.use((req, res, next) => {
 });
 
 // Routes
-app.use('/admin', dashboardRoute);
-app.use('/admin', productRoute);
-app.use('/admin', categoryRoute);
-app.use('/admin',userRoute)
-app.use('/admin',subcategory)
+app.use('/admin',authenticateToken, dashboardRoute);
+app.use('/admin',authenticateToken, productRoute);
+app.use('/admin',authenticateToken, categoryRoute);
+app.use('/admin',authenticateToken,userRoute)
+app.use('/admin',authenticateToken,subcategory)
 
 
 app.post('/register', register);
 app.post('/login', login);
-app.get("/login", (req, res) => {
+app.get("/login",(req, res) => {
     res.render("login");
 });
+
+app.post("/logout",(req,res)=>{
+    res.clearCookie("token",{
+        httpOnly:true,
+    })
+    res.redirect("/login")
+})
 
 // Start the Server
 app.listen(PORT, () => {
