@@ -59,12 +59,19 @@ const updateCategory = async(req,res) =>{
     const categoryId = req.params.id;
 
     const {name,description,status} =req.body;
-    const categoryImage = req.file.path.replace(/^public[\\/]/, '');
-       
+    const updateData = {
+        name,
+        description,
+        status,
+    };
+    if (req.file) {
+        const categoryImage = req.file.path.replace(/^public[\\/]/, '');
+        updateData.image = categoryImage; // Add the image path to the update data
+    }
     try{
         const updateCategory = await Category.findByIdAndUpdate(
             categoryId,
-            {name,description,status,image:categoryImage},
+            {name,description,status,updateData},
             {new:true}
         )
 

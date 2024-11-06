@@ -13,13 +13,13 @@ const userRoute  = require('./routes/admin/users')
 const subcategory =  require('./routes/admin/subcategory')
 const cookieParser = require("cookie-parser");
 
-const authenticateToken = require("./middleware/authenticate")
+const {authenticateToken,isAdmin} = require("./middleware/authenticate")
 // Connect to the database
 connectDB();
 
 // Import Controllers
 const { register, login } = require('./controller/register');
-
+const {index,productDetail} = require('./controller/homeController')
 // Middleware
 app.use(cookieParser());
 app.use(express.static('public')); // Serves static files from 'public' directory
@@ -34,18 +34,21 @@ app.use((req, res, next) => {
         req.app.set('layout', './layout/admin');
     } else if (req.path.startsWith('/user')) {
         req.app.set('layout', './layout/user');
-    } else {
+    }else if(req.path.startsWith("/login")){
+        req.app.set('layout', './layout/login');
+    } 
+    else {
         req.app.set('layout', './layout/main');
     }
     next();
 });
 
 // Routes
-app.use('/admin',authenticateToken, dashboardRoute);
-app.use('/admin',authenticateToken, productRoute);
-app.use('/admin',authenticateToken, categoryRoute);
-app.use('/admin',authenticateToken,userRoute)
-app.use('/admin',authenticateToken,subcategory)
+app.use('/admin',authenticateToken,isAdmin, dashboardRoute);
+app.use('/admin',authenticateToken, isAdmin,productRoute);
+app.use('/admin',authenticateToken,isAdmin, categoryRoute);
+app.use('/admin',authenticateToken,isAdmin,userRoute)
+app.use('/admin',authenticateToken,isAdmin,subcategory)
 
 
 app.post('/register', register);
@@ -53,6 +56,9 @@ app.post('/login', login);
 app.get("/login",(req, res) => {
     res.render("login");
 });
+
+app.get("/",index)
+app.get("/product/:id",productDetail)
 
 app.post("/logout",(req,res)=>{
     res.clearCookie("token",{

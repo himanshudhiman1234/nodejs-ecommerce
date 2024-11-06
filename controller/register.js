@@ -57,21 +57,26 @@ try{
     if(!isMatch){
       return res.status(400).json({message:"Invalid Credential"})
     }
-
-    const token = jwt.sign({
-        id:user._id,email:user.email,
-    },process.env.JWT_SECRET,{
-        expiresIn:"1h"
-    })
+    const token = jwt.sign(
+        { id: user._id, email: user.email, role: user.role },  // Include role in the token payload
+        process.env.JWT_SECRET,
+        { expiresIn: "1h" }
+    );
 
     res.cookie("token", token, {
         httpOnly: true,
-        secure: process.env.NODE_ENV === "production", // Secure in production only
-        maxAge: 3600000 // 1 hour
+        secure: process.env.NODE_ENV === "production",  // Secure in production only
+        maxAge: 3600000  // 1 hour
     });
 
-    // Redirect to the admin show-users page
-    res.redirect("/admin/show-users");
+    // Redirect based on role
+    if (user.role === "admin") {
+        res.redirect("/admin/show-users");
+    } else {
+        res.redirect("/user");
+    }
+
+   
 }catch(error){
     console.log(error);
     res.status(500).json({message:"Server error"})
