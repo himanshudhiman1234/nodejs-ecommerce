@@ -27,6 +27,7 @@ const isAdmin =(req,res,next) =>{
 
 
 const isUser = (req, res, next) => {
+    console.log(req.user.role)
     if (req.user.role !== "user") {
         return res.status(403).json({ message: "Access denied. Users only." });
     }

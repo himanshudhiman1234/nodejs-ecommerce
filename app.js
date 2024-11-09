@@ -2,6 +2,8 @@ const express = require("express");
 const app = express();
 const expressLayout = require("express-ejs-layouts");
 const connectDB = require('./config/db');
+
+
 require('dotenv').config();
 const PORT = process.env.PORT || 5000;
 
@@ -11,6 +13,12 @@ const productRoute = require('./routes/admin/products');
 const categoryRoute = require('./routes/admin/category');
 const userRoute  = require('./routes/admin/users')
 const subcategory =  require('./routes/admin/subcategory')
+
+
+//frontend
+
+const homeController = require('./routes/home')
+
 const cookieParser = require("cookie-parser");
 
 const {authenticateToken,isAdmin} = require("./middleware/authenticate")
@@ -19,7 +27,7 @@ connectDB();
 
 // Import Controllers
 const { register, login } = require('./controller/register');
-const {index,productDetail} = require('./controller/homeController')
+const {index,productDetail,getContact} = require('./controller/homeController')
 // Middleware
 app.use(cookieParser());
 app.use(express.static('public')); // Serves static files from 'public' directory
@@ -27,6 +35,8 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));  // For parsing application/x-www-form-urlencoded
 app.use(expressLayout);
 app.set('view engine', 'ejs');
+
+
 
 // Dynamic Layout Selection Middleware
 app.use((req, res, next) => {
@@ -50,6 +60,8 @@ app.use('/admin',authenticateToken,isAdmin, categoryRoute);
 app.use('/admin',authenticateToken,isAdmin,userRoute)
 app.use('/admin',authenticateToken,isAdmin,subcategory)
 
+//frontend
+app.use('/',homeController)
 
 app.post('/register', register);
 app.post('/login', login);
@@ -59,7 +71,7 @@ app.get("/login",(req, res) => {
 
 app.get("/",index)
 app.get("/product/:id",productDetail)
-
+app.get("/contact",getContact)
 app.post("/logout",(req,res)=>{
     res.clearCookie("token",{
         httpOnly:true,
