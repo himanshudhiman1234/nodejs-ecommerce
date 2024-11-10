@@ -2,6 +2,10 @@ const category = require("../models/category");
 const Category = require("../models/category");
 const Product = require("../models/products");
 const Order = require("../models/order")
+const stripePublicKey = process.env.STRIPE_API_KEY;
+const stripeSecretKey = process.env.STRIPE_SECRET_KEY;
+const stripe = require('stripe')(stripeSecretKey);
+
 const index = async(req,res) =>{
     const categories = await Category.find();
 
@@ -114,14 +118,36 @@ const getCheckout = async (req, res) => {
         subtotal += item.price * item.quantity;
     });
 
-    const shipping = 10; // Example shipping cost
+  
+    const shipping = 10;
     const total = subtotal + shipping;
+
+    const totalAmount = Math.round(subtotal + shipping);
+
+    // Ensure totalAmount is valid
+    if (isNaN(totalAmount) || totalAmount <= 0) {
+        throw new Error("Invalid total amount for checkout.");
+    }
+    const paymentIntent = await stripe.paymentIntents.create({
+        amount: totalAmount * 100, // Stripe requires the amount in the smallest currency unit (e.g., cents)
+        currency: "INR",
+        payment_method_types: ["card"], // Specify the payment method type
+        description: "Web Development Product", // Update the description as needed
+        receipt_email: req.body.email, // Optional: use customer's email if available
+    });
+
+    // Send client secret and public key to the client for Stripe.js processing
+    res.json({
+        clientSecret: paymentIntent.client_secret,
+        stripePublicKey: process.env.STRIPE_API_KEY,
+    });
 
     res.render("frontend/checkout", {
         checkout,       // Pass the cart items as checkout
         subtotal,       // Pass subtotal
         shipping,       // Pass shipping cost
-        total           // Pass total cost
+        total    ,       // Pass total cost
+        key: stripePublicKey
     });
 };
 
@@ -156,7 +182,11 @@ const placeOrder = async (req, res) => {
         }))
     });
 
+
+
     await newOrder.save();
+
+
     res.redirect('/order/confirmation');
 };
 
