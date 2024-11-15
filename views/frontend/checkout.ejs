@@ -1,3 +1,6 @@
+
+
+
 <form action="/orders" method="POST">
 <div class="container-fluid pt-5">
     <div class="row px-xl-5">
@@ -181,19 +184,8 @@
                         </div>
                     </div>
                 </div>
-
-                <form action="payment" method="POST">
-                    <script 
-                       src="//checkout.stripe.com/v2/checkout.js"
-                       class="stripe-button"
-                       data-key="<%= key %>"
-                       data-amount="2500"
-                       data-currency="inr"
-                       data-name="Crafty Gourav"
-                       data-description="Handmade Art and Craft Products"
-                       data-locale="auto" >
-                     </script>
-                 </form>
+              
+              
 
                 <div class="card-footer border-secondary bg-transparent">
                     <button class="btn btn-lg btn-block btn-primary font-weight-bold my-3 py-3">Place Order</button>

@@ -128,19 +128,13 @@ const getCheckout = async (req, res) => {
     if (isNaN(totalAmount) || totalAmount <= 0) {
         throw new Error("Invalid total amount for checkout.");
     }
-    const paymentIntent = await stripe.paymentIntents.create({
-        amount: totalAmount * 100, // Stripe requires the amount in the smallest currency unit (e.g., cents)
-        currency: "INR",
-        payment_method_types: ["card"], // Specify the payment method type
-        description: "Web Development Product", // Update the description as needed
-        receipt_email: req.body.email, // Optional: use customer's email if available
-    });
+    // x// });
 
     // Send client secret and public key to the client for Stripe.js processing
-    res.json({
-        clientSecret: paymentIntent.client_secret,
-        stripePublicKey: process.env.STRIPE_API_KEY,
-    });
+    // res.json({
+    //     clientSecret: paymentIntent.client_secret,
+    //     stripePublicKey: process.env.STRIPE_API_KEY,
+    // });
 
     res.render("frontend/checkout", {
         checkout,       // Pass the cart items as checkout
@@ -164,7 +158,9 @@ const placeOrder = async (req, res) => {
     let subtotal = cart.reduce((acc, item) => acc + item.price * item.quantity, 0);
     const shipping = 10;
     const totalAmount = subtotal + shipping;
-    const price = subtotal;
+
+    console.log("Subtotal:", subtotal, "Shipping:", shipping, "Total Amount before save:", totalAmount);
+
     const newOrder = new Order({
         totalAmount,
         shippingDetails: {
@@ -175,6 +171,7 @@ const placeOrder = async (req, res) => {
         },
         userId: req.user.id,
         status: "processing",
+        paymentStatus: "pending", // Initial status
         items: cart.map(item => ({
             productId: item.productId,
             quantity: item.quantity,
@@ -182,12 +179,51 @@ const placeOrder = async (req, res) => {
         }))
     });
 
+    console.log("New Order:", newOrder);
 
+    const session = await stripe.checkout.sessions.create({
+        payment_method_types: ['card'],
+        line_items: [
+            ...cart.map(item => ({
+                price_data: {
+                    currency: 'usd',
+                    product_data: {
+                        name: item.name
+                    },
+                    unit_amount: Math.round(item.price * 100) // Price in cents
+                },
+                quantity: item.quantity
+            })),
+            // Add shipping as a separate line item
+            {
+                price_data: {
+                    currency: 'usd',
+                    product_data: {
+                        name: 'Shipping'
+                    },
+                    unit_amount: Math.round(shipping * 100) // Shipping fee in cents
+                },
+                quantity: 1 // Only one shipping charge
+            }
+        ],
+        mode: 'payment',
+        success_url: `${req.protocol}://${req.get('host')}/order/confirmation?session_id={CHECKOUT_SESSION_ID}&orderId=${newOrder._id}`,
+        cancel_url: `${req.protocol}://${req.get('host')}/cart`
+    });
+
+    newOrder.stripeSessionId = session.id;
+
+    // Debugging the totalAmount before saving
+    console.log("Final Total Amount before save:", newOrder.totalAmount);
 
     await newOrder.save();
 
+    // Check the saved order
+    const savedOrder = await Order.findById(newOrder._id);
+    console.log("Saved Order Total Amount:", savedOrder.totalAmount);
 
-    res.redirect('/order/confirmation');
+    res.redirect(session.url);
 };
+
 
 module.exports = {index,productDetail,getContact,shop,addToCart,cart,getCheckout,placeOrder}

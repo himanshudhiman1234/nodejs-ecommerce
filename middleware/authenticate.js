@@ -5,12 +5,12 @@ const authenticateToken = (req,res,next) =>{
     const token  = req.cookies.token;
 
     if(!token){
-        return res.status(401).json({message:"Access  denied not token"})
+        return  res.redirect('/login'); 
     }
 
     jwt.verify(token,process.env.JWT_SECRET,(err,decoded)=>{
         if(err){
-            return res.json(403).json({message:"Invalid TOken"})
+            return  res.redirect('/login'); 
         }
         req.user = decoded;
         next();

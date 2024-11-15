@@ -47,7 +47,7 @@ const orderSchema = new mongoose.Schema({
     type: String,
     enum: ['pending', 'completed', 'failed'],
     default: 'pending',
-  },
+},
   totalAmount: {
     type: Number,
     required: true,
@@ -67,9 +67,16 @@ const orderSchema = new mongoose.Schema({
   },
 });
 
+
 orderSchema.pre('save', function (next) {
-  // Calculate totalAmount for the order based on the item total prices
-  this.totalAmount = this.items.reduce((sum, item) => sum + item.totalPrice, 0);
+  // If totalAmount already includes shipping, do not overwrite it
+  const itemsTotal = this.items.reduce((sum, item) => sum + item.totalPrice, 0);
+  
+  // Add shipping explicitly if not already included
+  if (this.totalAmount !== itemsTotal) {
+    this.totalAmount = itemsTotal + 10; // Replace 10 with dynamic shipping if needed
+  }
+
   next();
 });
 

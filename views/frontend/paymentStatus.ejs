@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Payment Status</title>
+</head>
+<body>
+    <h1 style="text-align: center;">Payment Status</h1>
+    
+    <div style="text-align: center;margin-top: 50px;">
+    <% if (status === 'completed') { %>
+        <h1 style="color: green;">Payment Successful</h1>
+        <p>Your payment was successful, and your order is being processed.</p>
+      <% } else if (status === 'failed') { %>
+        <h1>Payment Failed</h1>
+        <p>There was an error with your payment. Please try again or contact support.</p>
+      <% } else if (status === 'pending') { %>
+        <h1>Payment Pending</h1>
+        <p>Your payment is being processed. Please wait for confirmation.</p>
+      <% } else { %>
+        <h1>Error</h1>
+        <p>There was an issue processing your request. Please contact support.</p>
+      <% } %>
+      <a href="/">Go to homepage</a>
+    </div>
+    
+ 
+</body>
+</html>
