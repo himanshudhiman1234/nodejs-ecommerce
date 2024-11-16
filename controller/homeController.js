@@ -37,6 +37,23 @@ const productDetail = async(req,res) =>{
 } 
 
 
+const getCategory = async(req,res) =>{
+
+    const categoryName = req.params.name;
+    // console.log(categoryName)
+    const category = await Category.findOne({ name: categoryName });
+
+    if (!category) {
+        return res.status(404).json({ message: 'Category not found' });
+    }
+
+    const products = await Product.find({ category: category._id });
+
+
+
+    res.render("frontend/category",{products})
+}
+
 const getContact = async(req,res) => {
     const categories = await Category.find();
     return res.render("frontend/contact",{categories})
@@ -226,4 +243,17 @@ const placeOrder = async (req, res) => {
 };
 
 
-module.exports = {index,productDetail,getContact,shop,addToCart,cart,getCheckout,placeOrder}
+
+
+const showOrder = async(req,res) =>{
+
+}
+
+
+
+
+
+
+
+
+module.exports = {index,productDetail,getContact,shop,addToCart,cart,getCheckout,placeOrder,getCategory,showOrder}
