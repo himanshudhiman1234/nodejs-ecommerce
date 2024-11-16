@@ -1,7 +1,7 @@
 const express = require("express")
 const router = express.Router();
 
-const {shop,addToCart,cart,getCheckout,placeOrder, getCategory} = require("../controller/homeController")
+const {shop,addToCart,cart,getCheckout,placeOrder, getCategory, showOrder} = require("../controller/homeController")
 const {authenticateToken,isUser} = require("../middleware/authenticate")
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 
@@ -15,6 +15,7 @@ router.get('/products/category/:name',getCategory)
 
 router.get('/cart',cart)
 router.get('/checkout',getCheckout)
+
 router.post('/orders',authenticateToken, isUser,placeOrder)
 
 router.get('/order/confirmation', async (req, res) => {

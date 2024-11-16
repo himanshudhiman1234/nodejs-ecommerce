@@ -11,6 +11,6 @@ confirmPassword:{type:String,required:true}
 
 
 
-const User =   mongoose.model("user",user)
+const User =   mongoose.model("User",user)
 
 module.exports  = User;

@@ -1,0 +1,128 @@
+<div class="pcoded-main-container">
+    <div class="pcoded-wrapper">
+        <div class="pcoded-content">
+            <!-- Page-header start -->
+           
+            <!-- Page-header end -->
+            <div class="pcoded-inner-content">
+                <!-- Main-body start -->
+                <div class="main-body">
+                    <div class="page-wrapper">
+                        <!-- Page-body start -->
+                        <div class="page-body">
+                            <!-- Basic table card start -->
+                            <div class="card">
+                                <div class="card-header">
+                                    <h5>Categories</h5>
+                                           <div class="card-header-right">
+                                        <ul class="list-unstyled card-option">
+                                            <li><i class="fa fa fa-wrench open-card-option"></i></li>
+                                            <li><i class="fa fa-window-maximize full-card"></i></li>
+                                            <li><i class="fa fa-minus minimize-card"></i></li>
+                                            <li><i class="fa fa-refresh reload-card"></i></li>
+                                            <li><i class="fa fa-trash close-card"></i></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="card-block table-border-style">
+                                    <div class="table-responsive">
+                                        <table class="table">
+                                            <thead>
+                                                <tr>
+                                                    <th>#</th>
+                                                  
+                                                    <th>Status</th>
+                                                    <th>Name</th>
+                                                    <th>Address</th>
+                                                    <th>payment Status</th>
+                                                    <th>Price</th>
+                                                    <th>Status</th>
+                                                    <th>Created At</th>
+                                                    <th>Updated At</th>
+
+
+                                                    
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <% orders.forEach((order, index) => { %>
+                                                    <tr>
+                                                      <th scope="row"><%= index + 1 %></th>
+                                                      
+                                                      <!-- Display the order ID -->
+                                                      
+                                                      <!-- Display the user ID -->
+                                                      <td><%= order.userId.name %></td>
+                                                  
+                                                      <!-- Loop through items and display product details -->
+                                                      <td>
+                                                        <% order.items.forEach(item => { %>
+                                                          <div>
+                                                            <!-- Display product name, price, and total price -->
+                                                            <strong><%= item.productId.name %></strong> - 
+                                                            Price: <%= item.productId.price %> - 
+                                                            Quantity: <%= item.quantity %> - 
+                                                            Total: <%= item.totalPrice %>
+                                                          </div>
+                                                        <% }) %>
+                                                      </td>
+                                                  
+                                                      <!-- Display shipping details -->
+                                                      <td>
+                                                        Address: <%= order.shippingDetails.address %><br>
+                                                        City: <%= order.shippingDetails.city %><br>
+                                                        Postal Code: <%= order.shippingDetails.postalCode %><br>
+                                                        Country: <%= order.shippingDetails.country %>
+                                                      </td>
+                                                  
+                                                      <!-- Display payment status -->
+                                                      <td>
+                                                        
+                                                        <% if (order.paymentStatus === 'pending') { %>
+                                                            <div style="background-color: red; color: white; padding: 5px; text-align: center;">
+                                                              <%= order.paymentStatus %>
+                                                            </div>
+                                                          <% } else if (order.paymentStatus === 'completed') { %>
+                                                            <div style="background-color: green; color: white; padding: 5px; text-align: center;">
+                                                              <%= order.paymentStatus %>
+                                                            </div>
+                                                          <% } %>
+                                                    </td>
+                                                  
+                                                      <!-- Display total amount -->
+                                                      <td><%= order.totalAmount %></td>
+                                                  
+                                                      <!-- Display order status -->
+                                                      <td><%= order.status %></td>
+                                                  
+                                                      <!-- Display order date -->
+                                                      <td><%= order.orderDate.toISOString().split('T')[0] %></td>
+                                                  
+                                                      <!-- Display last update date -->
+                                                      <td><%= order.updatedAt.toISOString().split('T')[0] %></td>
+                                                  
+                                                    </tr>
+                                                  <% }) %>
+                                                  
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Basic table card end -->
+                            <!-- Inverse table card start -->
+                        
+                            <!-- Background Utilities table end -->
+                        </div>
+                        <!-- Page-body end -->
+                    </div>
+                </div>
+                <!-- Main-body end -->
+
+                <div id="styleSelector">
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

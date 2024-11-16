@@ -14,6 +14,9 @@ const categoryRoute = require('./routes/admin/category');
 const userRoute  = require('./routes/admin/users')
 const subcategory =  require('./routes/admin/subcategory')
 
+//user
+const userOrder= require('./routes/user/order')
+
 
 //frontend
 
@@ -21,13 +24,16 @@ const homeController = require('./routes/home')
 
 const cookieParser = require("cookie-parser");
 
-const {authenticateToken,isAdmin} = require("./middleware/authenticate")
+// const {authenticateToken,isAdmin, isUser} = require("./middleware/authenticate")
+const {authenticateToken,isAdmin,isUser} = require("./middleware/authenticate")
+
 // Connect to the database
 connectDB();
 
 // Import Controllers
 const { register, login } = require('./controller/register');
 const {index,productDetail,getContact} = require('./controller/homeController')
+
 // Middleware
 app.use(cookieParser());
 app.use(express.static('public')); // Serves static files from 'public' directory
@@ -59,6 +65,14 @@ app.use('/admin',authenticateToken, isAdmin,productRoute);
 app.use('/admin',authenticateToken,isAdmin, categoryRoute);
 app.use('/admin',authenticateToken,isAdmin,userRoute)
 app.use('/admin',authenticateToken,isAdmin,subcategory)
+
+
+
+///User
+
+app.use("/user",authenticateToken,isUser,userOrder)
+
+
 
 //frontend
 app.use('/',homeController)

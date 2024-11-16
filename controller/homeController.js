@@ -2,6 +2,8 @@ const category = require("../models/category");
 const Category = require("../models/category");
 const Product = require("../models/products");
 const Order = require("../models/order")
+const User = require("../models/user");
+
 const stripePublicKey = process.env.STRIPE_API_KEY;
 const stripeSecretKey = process.env.STRIPE_SECRET_KEY;
 const stripe = require('stripe')(stripeSecretKey);
@@ -245,9 +247,6 @@ const placeOrder = async (req, res) => {
 
 
 
-const showOrder = async(req,res) =>{
-
-}
 
 
 
@@ -256,4 +255,5 @@ const showOrder = async(req,res) =>{
 
 
 
-module.exports = {index,productDetail,getContact,shop,addToCart,cart,getCheckout,placeOrder,getCategory,showOrder}
+
+module.exports = {index,productDetail,getContact,shop,addToCart,cart,getCheckout,placeOrder,getCategory}
