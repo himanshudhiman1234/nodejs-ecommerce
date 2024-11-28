@@ -62,24 +62,38 @@ const getContact = async(req,res) => {
 }
 
 const shop = async(req,res) =>{
-   
-   
+  
+   const page =parseInt(req.query.page) || 1;
+
+   const limit = 10;
+
+   const skip = (page -1) *limit;
+   const totalItems = await Product.countDocuments(); // Total items
+   const totalPages = Math.ceil(totalItems / limit);
     const { name, price, color, size } = req.query; // Get the search query from the URL parameters
-let query = {};
+        let query = {};
 
-if (name) {
-    // If there is a search query, perform a case-insensitive search
-    query.name = { $regex: name, $options: 'i' };
-} 
+        if (name) {
+            // If there is a search query, perform a case-insensitive search
+            query.name = { $regex: name, $options: 'i' };
+        } 
 
-if (price) {
-    const priceRange = price.split('-');
-    query.price = { $gte: Number(priceRange[0]), $lte: Number(priceRange[1]) };
-}
+        if (price) {
+            const priceFilters = Array.isArray(price) ? price : [price]; // Ensure it's an array
+            const priceConditions = priceFilters.map(range => {
+                const [min, max] = range.split('-').map(Number);
+                return { price: { $gte: min, $lte: max } };
+            });
+            query.$or = priceConditions; 
+        }
 
-const products = await Product.find(query); // Pass the query to Product.find()
-
-    return res.render("frontend/shop",{products})
+        const products = await Product.find(query).skip().limit(limit); // Pass the query to Product.find()
+        
+        if(req.xhr){
+            return res.render('partials/productList',{products,layout:false})
+        }
+        
+    return res.render("frontend/shop",{products,currentPage: page,totalPages})
 }
 
 const addToCart = async(req,res) =>{

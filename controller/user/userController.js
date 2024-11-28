@@ -13,3 +13,6 @@ const showOrder = async(req,res) =>{
 }
 
 module.exports = { showOrder}
+
+
+//  a.filter(a1 => a1 > 2)
