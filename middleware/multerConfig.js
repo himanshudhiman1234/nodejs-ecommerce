@@ -18,7 +18,7 @@ ensureUploadsDirectoryExists();
 // Configure storage
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
-        cb(null, 'public/uploads'); // Specify the upload directory
+        cb(null, 'tmp/uploads'); // Specify the upload directory
     },
     filename: (req, file, cb) => {
         // Create a unique file name
