@@ -3,7 +3,8 @@ const Category = require("../models/category");
 const Product = require("../models/products");
 const Order = require("../models/order")
 const User = require("../models/user");
-
+const http = require("http");
+const nodemailer = require("nodemailer")
 const stripePublicKey = process.env.STRIPE_API_KEY;
 const stripeSecretKey = process.env.STRIPE_SECRET_KEY;
 const stripe = require('stripe')(stripeSecretKey);
@@ -180,6 +181,7 @@ const getCheckout = async (req, res) => {
 
 
 
+
 const placeOrder = async (req, res) => {
     if (!req.user) {
         return res.redirect('/login');
@@ -263,6 +265,37 @@ const placeOrder = async (req, res) => {
 
 
 
+const sendMail = async (req, res) => {
+    try {
+       console.log(req.body)
+        // Create a transporter object
+        const transporter = nodemailer.createTransport({
+            service: "gmail",
+            auth: {
+                user: process.env.EMAIL_USER, // Use environment variables
+                pass: process.env.EMAIL_PASS // Use environment variables
+            }
+        });
+
+        // Email details
+        const mailOptions = {
+            from:"himanshudhiman999672@gmail.com",
+            to: req.body.email,
+            subject: req.body.subject,
+            text: req.body.message
+        };
+
+        // // Send the email
+        const emailResponse = await transporter.sendMail(mailOptions);
+        // console.log("Email sent:", emailResponse);
+
+        // Respond to the client
+        res.redirect('/contact')
+    } catch (error) {
+        console.error("Error sending email:", error);
+        res.status(500).send("Failed to send email");
+    }
+};
 
 
 
@@ -270,4 +303,4 @@ const placeOrder = async (req, res) => {
 
 
 
-module.exports = {index,productDetail,getContact,shop,addToCart,cart,getCheckout,placeOrder,getCategory}
+module.exports = {index,productDetail,getContact,shop,addToCart,cart,getCheckout,placeOrder,getCategory,sendMail}
